@@ -12,10 +12,10 @@ RUN curl -fsSL https://deb.nodesource.com/setup_14.x | bash - \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /src
-COPY ["PaylocityCodingChallenge/PaylocityCodingChallenge.csproj", "PaylocityCodingChallenge/"]
-RUN dotnet restore "PaylocityCodingChallenge/PaylocityCodingChallenge.csproj"
+COPY ["PaylocityCodingChallenge.csproj", "./"]
+RUN dotnet restore "PaylocityCodingChallenge.csproj"
 COPY . .
-WORKDIR "/src/PaylocityCodingChallenge"
+WORKDIR "/src/"
 RUN dotnet build "PaylocityCodingChallenge.csproj" -c Release -o /app/build
 
 FROM build AS publish

@@ -1,0 +1,6 @@
+﻿{
+  "PayPerCheck": 2000.00,
+  "CostOfBenefitsPerEmployee": 1000.00,
+  "CostOfBenefitsPerDependent": 500.00,
+  "NumOfPayPerYear": 26
+}

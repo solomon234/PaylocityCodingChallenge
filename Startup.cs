@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using PaylocityCodingChallenge.api.Repositories;
+using PaylocityCodingChallenge.api.Service;
 
 namespace PaylocityCodingChallenge
 {
@@ -21,6 +23,8 @@ namespace PaylocityCodingChallenge
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddScoped<IEmployeeBenefitService,EmployeeBenefitService>();
+            services.AddScoped<IEmployeeBenefitRepository,EmployeeBenefitRepository>();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
@@ -50,7 +54,7 @@ namespace PaylocityCodingChallenge
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
+                    pattern: "api/{controller}/{action=Index}/{id?}");
             });
 
             app.UseSpa(spa =>

@@ -24,4 +24,5 @@ RUN dotnet publish "PaylocityCodingChallenge.csproj" -c Release -o /app/publish
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "PaylocityCodingChallenge.dll"]
+# ENTRYPOINT ["dotnet", "PaylocityCodingChallenge.dll"]
+CMD ASPNETCORE_URLS=http://*:$PORT dotnet PaylocityCodingChallenge.dll

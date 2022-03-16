@@ -6,12 +6,7 @@ namespace PaylocityCodingChallenge.Model
     {
         public string FirstName {get; set; }
         public string LastName {get; set; }
-
         public double pay { get; set; }
-        
-        
-        private List<Dependent> Dependents { get; set; } 
-        
-        
+        private List<Dependent> Dependents { get; set; }
     }
 }

@@ -2,127 +2,180 @@ import React, { useState, useEffect } from 'react';
 
 export const BenefitsForm = (props) => {    
     
+    const [errors, setErrors] = useState({});
+    
+    
+    const handleValidation = (val, name) => {
+        let newErr = {...errors};
+        if (val === ''){
+            newErr[name] = name + ' cannot be blank';
+            setErrors(newErr);
+            return false;
+        }
+        if (val.includes('Choose')){
+            newErr[name] = 'Must define relationship to dependent';
+            setErrors(newErr);
+            return false;
+        }
+        setErrors({});
+        return true;        
+    }
     
     const [employee, setEmployee] = useState({
         ...props.employee
     });
     
-    const edit = () =>{
-        employee.edited = false;
+    const edit = () => {
+        setEmployee({...employee, edited: false});
     }
     
     const handleChangeFirstName = (e) => {
-        setEmployee({...employee, firstName: e.target.value});
+        if (handleValidation(e.target.value, e.target.id))
+            setEmployee({...employee, firstName: e.target.value});
     };
 
     const handleChangeLastName = (e) => {
-        setEmployee({...employee, lastName: e.target.value});
+        if (handleValidation(e.target.value, e.target.id))
+            setEmployee({...employee, lastName: e.target.value});
     };
-    const triggerFunction = () => {
+    const saveEmployee = () => {
         employee.edited = true;
         props.func(employee);
     }
     
     const [dependents, setDependents] = useState([]);    
    
-    const handleChangeDependentFName = (val, i) => {        
-        const newDependent = dependents.map((e,j) =>{
-            if (i !== j) return e;            
-            return {...e, firstName: val}            
-        })
-        setDependents([...newDependent]);
+    const handleChangeDependentFName = (e, i) => {
+        let val = e.target.value;
+        if (handleValidation(val, e.target.id)){
+            const newDependent = dependents.map((e,j) =>{
+                if (i !== j) return e;
+                return {...e, firstName: val}
+            })
+            setDependents([...newDependent]);    
+        }        
     };
     
-    const handleChangeDependentLName = (val, i) => {
-        const newDependent = dependents.map((e,j) =>{
-            if (i !== j) return e;
-            return {...e, lastName: val}
-        })
-        setDependents([...newDependent]);    
+    const handleChangeDependentLName = (e, i) => {
+        let val = e.target.value;
+        if (handleValidation(val, e.target.id)){
+            const newDependent = dependents.map((e,j) =>{
+                if (i !== j) return e;
+                return {...e, lastName: val}
+            })
+            setDependents([...newDependent]);
+        }    
     };
     
-    const handleChangeDependentRelationship = (val, i) => {
-        const newDependent = dependents.map((e,j) =>{
-            if (i !== j) return e;
-            return {...e, relationship: val}
-        })
-        setDependents([...newDependent]);
+    const handleChangeDependentRelationship = (e, i) => {
+        let val = e.target.value;
+        if (handleValidation(val, e.target.id)) {
+            const newDependent = dependents.map((e, j) => {
+                if (i !== j) return e;
+                return {...e, relationship: val}
+            })
+            setDependents([...newDependent]);
+        }
     };    
+    
 
-    const addRow = () =>{
-        console.log('add row');        
-        setDependents([...dependents,{}]);
+
+    const addRow = () => {
+        setDependents([...dependents, {}]);
     }        
     
     const deleteRow = (i) => {
-        dependents.splice(i,1);
-        setDependents([...dependents]);
-
+        let newDependents = [...dependents];
+        newDependents.splice(i, 1);
+        setDependents([...newDependents]);
     }
-    const saveChanges = () => {
-        setEmployee({...employee, dependents: dependents});
-        props.func(employee);
+    
+    const saveDependents = () => {
+        console.log('saved');
+        let newEmployeeDependents = {...employee, dependents: [...dependents]};
+        setEmployee({...newEmployeeDependents});
+        props.func(newEmployeeDependents);
+    }
+    
+    const getErrorVarName = (e, i) => {
+        return e.target.id.trim() + (i+1).toString();
     }
 
     return (
-            <div className="container" style={{width: '700px'}}>
+            <div className="container" >
                 <h4 className="mb-3">Employee Information</h4>
                 <div>
                     <div className="row">
                         <div className="col-md-6 mb-3">
                             <strong className="col-form-label">First Name</strong>
-                            <input type="text" className={employee.edited ? 'd-none' : 'form-control'} id="firstName" placeholder="" onChange={handleChangeFirstName} />                          
+                            <input type="text" className={employee.edited ? 'd-none' : 'form-control'} id="EmployeeFirstName" placeholder="" onBlur={handleChangeFirstName} />
+                            <span className="text-danger">{errors.EmployeeFirstName}</span>
                             <div className={!employee.edited ? 'd-none' : ''}>{employee.firstName}</div>                          
                         </div>
                         <div className="col-md-6 mb-3">
                             <strong className="col-form-label">Last Name</strong>
-                            <input type="text" className={employee.edited ? 'd-none' : 'form-control'} id="lastName" placeholder="" onChange={handleChangeLastName} />
+                            <input type="text" className={employee.edited ? 'd-none' : 'form-control'} id="EmployeeLastName" placeholder="" onBlur={handleChangeLastName} />
+                            <span className="text-danger">{errors.EmployeeLastName}</span>
                             <div className={!employee.edited ? 'd-none' : ''}>{employee.lastName}</div>
                         </div>
                     </div>
                     
-                    <button className={employee.edited ? 'd-none' : 'btn btn-primary'} onClick={triggerFunction}> Add </button>
+                    <button className={employee.edited ? 'd-none' : 'btn btn-primary'} onClick={saveEmployee}> Save </button>
                     <button className={!employee.edited ? 'd-none' : 'btn btn-success'} onClick={edit}> Edit </button>
+                    
+                    {props.employee.firstName !== '' &&
+                        <div className="mt-4">
+                            <h4 className="mb-3">Dependent Information</h4>
+                            <table className="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>Delete</th>
+                                    <th>First Name</th>
+                                    <th>Last Name</th>
+                                    <th>Relationship</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {
+                                    dependents.length > 0 && dependents.map((item, i) => {
+                                        return (
+                                            <tr key={i}>
+                                                <td className="text-center">
+                                                    <button onClick={() => deleteRow(i)}
+                                                            className="btn btn-sm btn-outline-danger">x
+                                                    </button>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id={'DependentFirstName' + (i+1).toString()}
+                                                           onBlur={(e) => handleChangeDependentFName(e, i)}/>                                                    
+                                                    <span className="text-danger">{errors[(e) => getErrorVarName(e,i)] }</span>
+                                                </td>
+                                                <td>
+                                                    <input type="text" id={'DependentLastName' + (i+1).toString()}
+                                                           onBlur={(e) => handleChangeDependentLName(e, i)}/>
+                                                    <span className="text-danger">{errors[(e) => getErrorVarName(e,i)]}</span>
+                                                </td>
+                                                <td>
+                                                    <select className="dropdown dropdown-item-text"  id={'DependentRelationShip' + (i+1).toString()}
+                                                            onBlur={(e) => handleChangeDependentRelationship(e, i)}>
+                                                        <option value="">Choose...</option>
+                                                        <option value="Spouse">Spouse</option>
+                                                        <option value="Child">Child</option>
+                                                        <option value="Adopted Child">Adopted Child</option>
+                                                    </select>
+                                                    <span className="text-danger">{errors[(e) => getErrorVarName(e,i)]}</span>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                }
+                                </tbody>
+                            </table>
+                            <button className="btn btn-primary mr-3" onClick={addRow}>Add</button>
+                            <button className="btn btn-success" disabled={errors === {}} onClick={saveDependents}>Save Changes</button>
+                        </div>
 
-                    <h4 className="mb-3">Dependent Information</h4>
-                    <table className="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th width="35px">Actions</th>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Relationship</th>
-                            </tr>                            
-                        </thead>
-                        <tbody>
-                        {
-                            dependents.map((item, i) => {
-                                return (
-                                    <tr key={i}>           
-                                        <td >
-                                            <button onClick={() => deleteRow(i)} className="btn btn-sm btn-outline-danger">x</button>
-                                        </td>    
-                                        <td>
-                                            <input type="text" onBlur={(e) => handleChangeDependentFName(e.target.value, i)}/>
-                                        </td>
-                                        <td>
-                                            <input type="text" onBlur={(e) => handleChangeDependentLName(e.target.value, i)}/>
-                                        </td>
-                                        <td>
-                                            <select className="dropdown dropdown-item-text" onBlur={(e) => handleChangeDependentRelationship(e.target.value, i)}>
-                                                <option value="">Choose...</option>
-                                                <option value="Spouse">Spouse</option>
-                                                <option value="Child">Child</option>                                                
-                                            </select>
-                                        </td>
-                                    </tr>                                    
-                                )
-                            })
-                        }
-                        </tbody>
-                    </table>
-                    <button className="btn btn-primary" onClick={addRow}>Add</button>
-                    <button className="btn btn-success" onClick={saveChanges}>Save Changes</button>                    
+                    }
                 </div>
             </div>
         );

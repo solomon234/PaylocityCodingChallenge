@@ -19,20 +19,9 @@ namespace PaylocityCodingChallenge.Controllers
         {
             _service = service;
         }
-        
+
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="e"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public async Task<bool> Post(Employee e)
-        {
-            return await Task.FromResult(true);
-        }
-        
-        /// <summary>
-        /// 
+        /// Gets employee pay from db 
         /// </summary>
         /// <returns></returns>
         [Route("getEmployeePay")]
@@ -43,7 +32,7 @@ namespace PaylocityCodingChallenge.Controllers
         }
         
         /// <summary>
-        /// 
+        /// Gets Cost of benefits for an employee from db
         /// </summary>
         /// <returns></returns>
         [Route("getCostOfBenefitsPerEmployee")]
@@ -54,7 +43,7 @@ namespace PaylocityCodingChallenge.Controllers
         }
         
         /// <summary>
-        /// 
+        /// Gets Cost of benefits for a dependent from db
         /// </summary>
         /// <returns></returns>
         [Route("getCostOfBenefitsPerDependent")]
@@ -65,7 +54,7 @@ namespace PaylocityCodingChallenge.Controllers
         }
         
         /// <summary>
-        /// 
+        /// Gets frequency of annual pay from db
         /// </summary>
         /// <returns></returns>
         [Route("getNumOfPayPerYear")]

@@ -26,7 +26,7 @@ export const Home = () => {
               {!employee.completed &&
                   <>
                       <div className="col-md-4 order-md-2 mb-4">
-                          <ResultsSideBar employee={employee}/>
+                          <ResultsSideBar employee={employee} func={pull_data}/>
                       </div>
 
                       <div className="col-md-8 list-group mb-3">

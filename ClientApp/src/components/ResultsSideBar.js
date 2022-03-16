@@ -41,14 +41,12 @@ export class ResultsSideBar extends Component {
                 }
                 
                 return res;
-           },
-            isEmployeeValid: () => {
-                return (this.props.employee.firstName + this.props.employee.lastName).trim() === ''
-            },
-            confirmContributionClick: () => {
-                if (this.props.employee.firstName !== '')
-                    this.props.employee.completed = true;
+           },           
+            confirmContributionClick: () => {                
+                this.props.employee.completed = true;
+                this.props.func(this.props.employee);
             }
+            
         };
     }
 
@@ -115,7 +113,7 @@ export class ResultsSideBar extends Component {
                         <p className={'small text-muted'}>${((this.state.employeePay - this.state.calculate()) * this.state.numPayYear).toFixed(2)} / year</p>
                     </div>
                 </div>           
-                <button disabled={this.state.isEmployeeValid.toString()} className="btn btn-block btn-success mt-4" onClick={this.state.confirmContributionClick}>Confirm Contribution</button>
+                <button disabled={(this.props.employee.firstName + this.props.employee.lastName).trim() === ''} className="btn btn-block btn-success mt-4" onClick={this.state.confirmContributionClick}>Confirm Contribution</button>
             </div>
         );
     }
